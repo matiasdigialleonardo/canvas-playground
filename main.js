@@ -296,6 +296,7 @@ function main()
 
 	let actionMenuModel = new ActionMenuModel();
 	let actionMenuView = new ActionMenuModel( canvas.getContext("2d") );
+	
 
 	playerController.connect();
 	keyboardController.connect();

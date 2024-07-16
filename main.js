@@ -1,3 +1,126 @@
+class ActionMenyView extends HTMLElement
+{
+	constructor( drawingContext )
+	{
+		super();
+
+        this.drawingContext = drawingContext;
+        this.currentState = null;
+	}
+
+	set state( newState )
+	{
+		this.currentState = newState;
+		this.update();
+	}
+
+	get state()
+	{
+		return this.currentState;
+	}
+
+	update()
+	{
+		this.drawingContext.clearRect(0, 0, this.drawingContext.canvas.width, this.drawingContext.canvas.height);
+		this.drawingContext.fillStyle = this.state.color;
+		this.drawingContext.fillRect(this.state.position_x, this.state.position_y, this.state.width, this.state.height);
+	}
+}
+
+customElements.define('x-view', PlayerView );
+
+class ActionMenuModel extends EventTarget
+{
+	constructor()
+	{
+		super();
+
+		this.state =
+		{
+			width: 200,
+	    	height: 200,
+	    	color: 'black',
+	    	position_x: 200,
+	    	position_y: 550
+		};
+		
+		this.delta_x = 20;
+    	this.delta_y = 10;
+ 	}
+
+ 	moveUp()
+ 	{
+ 		this.state.position_y -= this.delta_y;
+ 		this.dispatchEvent( new CustomEvent('moveup') );
+ 	}
+
+ 	moveDown()
+ 	{
+ 		this.state.position_y += this.delta_y;
+ 		this.dispatchEvent( new CustomEvent('movedown') );
+ 	}
+
+ 	moveLeft()
+ 	{
+ 		this.state.position_x -= this.delta_x;
+ 		this.dispatchEvent( new CustomEvent('moveleft') );
+ 	}
+
+ 	moveRight()
+ 	{
+ 		this.state.position_x += this.delta_x;
+ 		this.dispatchEvent( new CustomEvent('moveright') );
+ 	}
+
+}
+
+class ActionMenuController
+{
+	constructor( model, view )
+	{
+		this.innerModel = model;
+		this.innerView = view;		
+	}
+
+	connect()
+	{
+		this.innerModel.addEventListener('moveup', this.onmoveup.bind(this) );
+		this.innerModel.addEventListener('moveright', this.onmoveright.bind(this) );
+		this.innerModel.addEventListener('moveleft', this.onmoveleft.bind(this) );
+		this.innerModel.addEventListener('movedown', this.onmovedown.bind(this) );
+	}
+
+	disconnect()
+	{
+		//To-do...
+	}
+
+	start()
+	{
+		this.innerView.state = this.innerModel.state;
+	}
+
+	onmoveup(event)
+	{
+		this.innerView.state = this.innerModel.state;
+	}
+
+	onmoveright(event)
+	{
+		this.innerView.state = this.innerModel.state;
+	}
+
+	onmoveleft(event)
+	{
+		this.innerView.state = this.innerModel.state;
+	}
+
+	onmovedown(event)
+	{
+		this.innerView.state = this.innerModel.state;
+	}
+}
+
 class PlayerView extends HTMLElement
 {
 	constructor( drawingContext )
@@ -39,10 +162,10 @@ class Player extends EventTarget
 		this.state =
 		{
 			width: 30,
-	    	height: 30,
-	    	color: 'green',
-	    	position_x: 10,
-	    	position_y: 100
+	    	height: 150,
+	    	color: 'red',
+	    	position_x: 200,
+	    	position_y: 350
 		};
 		
 		this.delta_x = 20;
@@ -161,8 +284,8 @@ class KeyboardController
 function main()
 {
 	let canvas = document.createElement('canvas');
-	canvas.width = 480;
-    canvas.height = 270;
+	canvas.width = 1200;
+    canvas.height = 800;
     canvas.style.border = "1px solid black";
     canvas.style.backgroundColor = "white";
     
@@ -170,6 +293,9 @@ function main()
 	let playerView = new PlayerView( canvas.getContext("2d") );
 	let playerController = new PlayerController(playerModel, playerView);
 	let keyboardController = new KeyboardController(playerModel, playerView);
+
+	let actionMenuModel = new ActionMenuModel();
+	let actionMenuView = new ActionMenuModel( canvas.getContext("2d") );
 
 	playerController.connect();
 	keyboardController.connect();

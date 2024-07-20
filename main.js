@@ -1,4 +1,6 @@
-class ActionMenyView extends HTMLElement
+// TO DO. UPDATE ALL ELEMENTS ON SCREEN, ONLY THE LAST ELEMENT WHOSE UPDATE METHOD IS CALLED IS VISIBLE ON SCREEN.
+
+class ActionMenuView extends HTMLElement
 {
 	constructor( drawingContext )
 	{
@@ -21,13 +23,14 @@ class ActionMenyView extends HTMLElement
 
 	update()
 	{
+		console.log("Action menu start method called.")
 		this.drawingContext.clearRect(0, 0, this.drawingContext.canvas.width, this.drawingContext.canvas.height);
 		this.drawingContext.fillStyle = this.state.color;
 		this.drawingContext.fillRect(this.state.position_x, this.state.position_y, this.state.width, this.state.height);
 	}
 }
 
-customElements.define('x-view', PlayerView );
+customElements.define('action-menu-view', ActionMenuView );
 
 class ActionMenuModel extends EventTarget
 {
@@ -48,30 +51,6 @@ class ActionMenuModel extends EventTarget
     	this.delta_y = 10;
  	}
 
- 	moveUp()
- 	{
- 		this.state.position_y -= this.delta_y;
- 		this.dispatchEvent( new CustomEvent('moveup') );
- 	}
-
- 	moveDown()
- 	{
- 		this.state.position_y += this.delta_y;
- 		this.dispatchEvent( new CustomEvent('movedown') );
- 	}
-
- 	moveLeft()
- 	{
- 		this.state.position_x -= this.delta_x;
- 		this.dispatchEvent( new CustomEvent('moveleft') );
- 	}
-
- 	moveRight()
- 	{
- 		this.state.position_x += this.delta_x;
- 		this.dispatchEvent( new CustomEvent('moveright') );
- 	}
-
 }
 
 class ActionMenuController
@@ -84,10 +63,7 @@ class ActionMenuController
 
 	connect()
 	{
-		this.innerModel.addEventListener('moveup', this.onmoveup.bind(this) );
-		this.innerModel.addEventListener('moveright', this.onmoveright.bind(this) );
-		this.innerModel.addEventListener('moveleft', this.onmoveleft.bind(this) );
-		this.innerModel.addEventListener('movedown', this.onmovedown.bind(this) );
+
 	}
 
 	disconnect()
@@ -100,25 +76,6 @@ class ActionMenuController
 		this.innerView.state = this.innerModel.state;
 	}
 
-	onmoveup(event)
-	{
-		this.innerView.state = this.innerModel.state;
-	}
-
-	onmoveright(event)
-	{
-		this.innerView.state = this.innerModel.state;
-	}
-
-	onmoveleft(event)
-	{
-		this.innerView.state = this.innerModel.state;
-	}
-
-	onmovedown(event)
-	{
-		this.innerView.state = this.innerModel.state;
-	}
 }
 
 class PlayerView extends HTMLElement
@@ -295,13 +252,16 @@ function main()
 	let keyboardController = new KeyboardController(playerModel, playerView);
 
 	let actionMenuModel = new ActionMenuModel();
-	let actionMenuView = new ActionMenuModel( canvas.getContext("2d") );
+	let actionMenuView = new ActionMenuView( canvas.getContext("2d") );
+	let actionMenuController = new ActionMenuController( actionMenuModel, actionMenuView);
 	
 
 	playerController.connect();
 	keyboardController.connect();
 
 	playerController.start();
+
+	actionMenuController.start();
 
 	document.body.appendChild(canvas);
 }

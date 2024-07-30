@@ -1,4 +1,14 @@
-// TO DO. UPDATE ALL ELEMENTS ON SCREEN, ONLY THE LAST ELEMENT WHOSE UPDATE METHOD IS CALLED IS VISIBLE ON SCREEN.
+// TO DO. UPDATE ALL ELEMENTS ON SCREEN, ONLY THE LAST ELEMENT WHOSE UPDATE METHOD IS CALLED IS VISIBLE ON SCREEN.	
+
+class Renderer extends HTMLElement
+{
+	constructor( drawingContext )
+	{
+		super();
+	}
+
+	// Continue here
+}
 
 class ActionMenuView extends HTMLElement
 {
